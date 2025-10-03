@@ -5,13 +5,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors();
 builder.Services.AddDbContext<Persistence.AppDbContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 var app = builder.Build();
+app.UseCors(policy => policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins("https://localhost:3000")); // React app domain
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline. 
 
 
 app.MapControllers();
