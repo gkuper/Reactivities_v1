@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Application.Activities.Queries;
 using Application.Activities.Commands;
+using Application.DTOs;
+using System.Reflection.Metadata;
 
 namespace API.Controllers
 {
@@ -20,27 +22,28 @@ namespace API.Controllers
         public async Task<ActionResult<Activity>> GetActivityDetail(string id)
         {
 
-            return await Mediator.Send(new GetActivityDetails.Query { Id = id });
+            return HandleResult(await Mediator.Send(new GetActivityDetails.Query { Id = id }));
+            
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> CreateActivity(Activity activity)
+        public async Task<ActionResult<string>> CreateActivity(CreateActivityDto activityDto)
         {
-            return await Mediator.Send(new CreateActivity.Command { Activity = activity });
+            return HandleResult(await Mediator.Send(new CreateActivity.Command { ActivityDto = activityDto }));
         }
 
         [HttpPut]
-        public async Task<IActionResult> EditActivity(Activity activity)
+        public async Task<ActionResult> EditActivity(EditActivityDto activity)
         {
-            await Mediator.Send(new EditActivity.Command { Activity = activity });
-            return NoContent();
+            return HandleResult(await Mediator.Send(new EditActivity.Command { ActivityDto = activity }));
+            
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteActivity(string id)
+        public async Task<ActionResult> DeleteActivity(string id)
         {
-            await Mediator.Send(new DeleteActivity.Command { Id = id });
-            return NoContent();
+            return HandleResult(await Mediator.Send(new DeleteActivity.Command { Id = id }));
+            
         }
     }
 }
